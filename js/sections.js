@@ -28,24 +28,24 @@ var redline = headerSection.append("line")
         .attr("y2",1)
         .style("stroke", "red")
         .style("stroke-width","1px")
-        .attr("shape-rendering","crispEdges")      
+        .attr("shape-rendering","crispEdges")
         ;
 
 var header = headerSection.append("text")
         .text("Election Donations - The race is one")
         .attr("x", 21)
-        .attr("y", 29)   
+        .attr("y", 29)
         .attr("class","header");
 
 var header = headerSection.append("text")
         .text("Which Candidates Seem to Win the Money Race?")
         .attr("x", 21)
-        .attr("y", 45)   
+        .attr("y", 45)
         .attr("class","subheader");
 
 
 
-    
+
 var fullCanvas = d3.select("#TEST")
     // .select("g")
         .append("svg")
@@ -68,7 +68,7 @@ var fullCanvas = d3.select("#TEST")
 
 
 
-var scrollVis = function () {
+var scrollVis = function (dataMap) {
 
 
 var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
@@ -108,7 +108,7 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
   var yAxisScatter4 = d3.svg.axis().scale(yscatter4).orient("left");
 
 // var colors = ['#67001f','#b2182b','#d6604d','#f4a582','#fddbc7','#e0e0e0','#bababa','#878787','#4d4d4d','#1a1a1a'];
-  
+
 // Chart Hist Scales (will need to be simplyfied, but works)
   var colorscale = d3.scale.linear().range([0, 10]);
   var xhist = d3.scale.linear().range([0, width - margin.rigth]);
@@ -167,7 +167,7 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
 
 
   var chart = function (selection) {
-    
+
     selection.each(function(dataCharts) {
 
     // find solution to import here all data (for map and for charts)
@@ -184,10 +184,11 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
       var MapData = jsonData(dataMap);
 
       console.log(EcoData);
+      console.log(MapData);
 
       // Call setupVis and setupSections functions here
-        setupVis(EcoData);
-        setupSections(); 
+        setupVis(EcoData, MapData);
+        setupSections();
       // comment out to see sections again
 
     })
@@ -195,23 +196,23 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
 
 
 
-  var setupVis = function (EcoData, MapData) {
+  var setupVis = function (EcoData, us) {
 
 
   // d3Map
-  var d3map = g.appendAll(".counties")
-                           .append("g")
-                            .attr("class", "counties")
-                            .selectAll("path")
-                            .data(
-                                topojson.feature(us[0], us[0].objects.counties).features
-                                )
-                            .enter()
-                            .append("path")
-                            .style("stroke", "none")
-                            .attr("fill", function (d) {return "rgb("+ (quantize(donorsRating.get(d.id)) * 20) +", 0, 0)"})
-                            .attr("d", path)
-                            .attr("opacity", 0);
+  var d3map = g
+    .append("g")
+    .attr("class", "counties")
+    .selectAll("path")
+    .data(
+      topojson.feature(us[0], us[0].objects.counties).features
+    )
+    .enter()
+    .append("path")
+    .style("stroke", "none")
+    .attr("fill", function (d) {return "rgb("+ (quantize(donorsRating.get(d.id)) * 20) +", 0, 0)"})
+    .attr("d", path)
+    .attr("opacity", 0);
 
 
 
@@ -241,7 +242,7 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
         .attr("y", function(d) { return yhist(d.Candidates); })
         .sort(function(a, b) { return yhist(a.Most_donations) - yhist(b.Most_donations); })
         .attr("height", yhist.rangeBand()/1.2)
-        .attr("width", 0)     
+        .attr("width", 0)
         .attr("fill", "red")
         .on("mouseover", function () {
           d3.select(this).attr("stroke", "yellow");
@@ -256,8 +257,8 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
         .append("text")
         // .attr("text-anchor", "end")
         .attr("class", "textCounties")
-        .attr("x", function(d) { 
-              return xhist(d.Most_donations) + margin.left + 20; 
+        .attr("x", function(d) {
+              return xhist(d.Most_donations) + margin.left + 20;
             })
         .attr("y", function(d) { return yhist(d.Candidates) + 35; })
         .attr("dy", ".35em")
@@ -345,7 +346,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
     var parseDate = d3.time.format("%d-%b-%y").parse;
 
 
-    // Other Titles: 
+    // Other Titles:
 
     g.append("text")
       .attr("class", "sectionHeading")
@@ -357,7 +358,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
 
   };
 
-  
+
 
 
   setupSections = function() {
@@ -420,8 +421,8 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
       .attr("opacity", 0);
   }
 
-  
-  
+
+
 
 
 
@@ -458,9 +459,9 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
       // .sort(d3.ascending)
       .attr("y", function(d) { return yhist(d.Candidates); })
       .attr("x", margin.left)
-      .attr("width", function(d) { 
-                return xhist(d.Most_donations); 
-              }) 
+      .attr("width", function(d) {
+                return xhist(d.Most_donations);
+              })
       .attr("y", function(d) { return yhist(d.Candidates); })
       .attr("height", yhist.rangeBand()/1.2)
       .attr("fill", "red")
@@ -469,8 +470,8 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
    g.selectAll(".textCounties")
     .transition()
     .duration(1000)
-    .attr("x", function(d) { 
-          return xhist(d.Most_donations) + margin.left + 20; 
+    .attr("x", function(d) {
+          return xhist(d.Most_donations) + margin.left + 20;
         })
     .attr("y", function(d) { return yhist(d.Candidates) + 35; })
     .attr("dy", ".35em")
@@ -515,17 +516,17 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
     .duration(1000)
     .attr("x", margin.left)
     .attr("y", function(d) { return yhist(d.Candidates); })
-    .attr("width", function(d) { 
-              return xhist2(d.Highest_per_head_donations); 
-            }) 
+    .attr("width", function(d) {
+              return xhist2(d.Highest_per_head_donations);
+            })
     .attr("fill", "navy")
     .attr("opacity", 1);
 
   g.selectAll(".textCounties")
     .transition()
     .duration(1000)
-    .attr("x", function(d) { 
-          return xhist2(d.Highest_per_head_donations) + margin.left + 20; 
+    .attr("x", function(d) {
+          return xhist2(d.Highest_per_head_donations) + margin.left + 20;
         })
     .attr("y", function(d) { return yhist2(d.Candidates) + 35; })
     .attr("dy", ".35em")
@@ -562,17 +563,17 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
     .duration(1000)
     .sort(function(a, b) { return yhist3(a.Most_number_of_donors) - yhist3(b.Most_number_of_donors); })
     .attr("x", margin.left)
-    .attr("width", function(d) { 
-              return xhist3(d.Most_number_of_donors); 
-            }) 
+    .attr("width", function(d) {
+              return xhist3(d.Most_number_of_donors);
+            })
     .attr("fill", "grey")
     .attr("opacity", 1);
 
   g.selectAll(".textCounties")
     .transition()
     .duration(1000)
-    .attr("x", function(d) { 
-          return xhist3(d.Most_number_of_donors) + margin.left + 20; 
+    .attr("x", function(d) {
+          return xhist3(d.Most_number_of_donors) + margin.left + 20;
         })
     .attr("y", function(d) { return yhist3(d.Candidates) + 35; })
     .attr("dy", ".35em")
@@ -590,18 +591,18 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
 
 
 // AxisHist An
-    g.selectAll(".x.axisHist")    
+    g.selectAll(".x.axisHist")
     .transition()
     .duration(300)
     .attr("opacity", 1);
 
-    g.selectAll(".y.axisHist")    
+    g.selectAll(".y.axisHist")
     .transition()
     .duration(300)
     .attr("opacity", 1);
 
 // Axis Skatter Aus
-    g.selectAll(".x.axisScatter")    
+    g.selectAll(".x.axisScatter")
     .transition()
     .duration(300)
     .attr("opacity", 0);
@@ -661,7 +662,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
                 })
             .attr("opacity", 1);
 
-    g.selectAll(".x.axisScatter")    
+    g.selectAll(".x.axisScatter")
             .transition()
             .duration(300)
             .attr("opacity", 1);
@@ -701,9 +702,9 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
           return "rgb(" + (Math.floor(colorscale(d.Bush_donations)) * 20) + ",0,0)";
           })
       .attr("opacity", 1);
-    
 
-        
+
+
 }
 
   function showChart4 () {
@@ -732,7 +733,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
           return "rgb(" + (Math.floor(colorscale(d.Sanders_donations)) * 20) + ",0,0)";
           })
       .sort(function(a, b) {
-      return d3.descending(a, b); 
+      return d3.descending(a, b);
       })
       .attr("opacity", 1);
 
@@ -799,7 +800,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
     return dataMap;
   }
 
-  
+
 
     // set up the data and update functions
   function getData(dataCharts) {
@@ -807,7 +808,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
         var parseDate = d3.time.format("%d-%b-%y").parse;
 
         return dataCharts.map(function (d, i) {
-        
+
           d.Candidates = d.Candidates;
           d.Most_donations = +d.Most_donations;
           d.county_Most_donations = d.county_Most_donations;
@@ -836,7 +837,7 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
           d.Cruz_donations  = +d.Cruz_donations;
           d.Clinton_donations = +d.Clinton_donations;
           d.Sanders_donations = +d.Sanders_donations;
-          d.Bush_donations  = +d.Bush_donations; 
+          d.Bush_donations  = +d.Bush_donations;
           d.Trump_donations = +d.Trump_donations;
 
           d.state_name_Rubio = d.state_name_Rubio;
@@ -879,10 +880,11 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
 
 
 function display(error, dataCharts, dataMap) {
+  console.log(error);
 
 
 // How to insert data for data Map too?
-  var plot = scrollVis();
+  var plot = scrollVis(dataMap);
   d3.select("#vis")
     .datum(dataCharts, dataMap)
     .call(plot);
@@ -939,8 +941,8 @@ var x = 1e7 * Math.random();
 
 queue()
     .defer(d3.csv, "data/datadummy2.csv")
-    .defer(d3.jsonp, "http://cdn.static-economist.com/sites/default/files/external/minerva_assets/ec-USLand/usp.json?callback=d3.jsonp.paint&x=" + x)
-    .defer(d3.tsv, "data/data_final.tsv", function(d) { donorsRating.set(d.id, +d.pop2014); })
+    .defer(d3.json, "data/usp.json")
+    .defer(d3.tsv, "data/data_final.tsv")
     .await(display);
 
 
@@ -950,6 +952,3 @@ queue()
 // d3.tsv("data/rate.tsv", display);
 
 // console.log(us)
-
-
-
