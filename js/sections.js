@@ -212,6 +212,7 @@ var margin = {top: 10, left: 90, bottom: 40, rigth: 150};
     .style("stroke", "none")
     .attr("fill", function (d) {return "rgb("+ (quantize(donorsRating.get(d.id)) * 20) +", 0, 0)"})
     .attr("d", path)
+    .attr('class', 'county')
     .attr("opacity", 0);
 
 
@@ -741,6 +742,11 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
 
   function showChart5 () {
 
+    g.selectAll(".counties").selectAll('.county')
+      .transition()
+      .duration(1500)
+      .attr("opacity", 0.0);
+
   g.selectAll(".y.axisScatter")
       .transition()
       .duration(1500)
@@ -771,9 +777,9 @@ var scatter = g.selectAll(".scatterplot").data(EcoData);
   function d3Map () {
 
 // d3Map Show
-    g.selectAll(".counties")
+    g.selectAll(".counties").selectAll('.county')
       .transition()
-      .duration(100)
+      .duration(1500)
       .attr("opacity", 1);
 
 
